@@ -61,3 +61,5 @@ target/
 #Ipython Notebook
 .ipynb_checkpoints
 *.suo
+/telemserver/bin
+/telemserver/obj/Debug
