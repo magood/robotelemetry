@@ -47,6 +47,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="gps_test_output.txt" />
+    <Content Include="rpi setup.txt" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
