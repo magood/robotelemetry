@@ -24,6 +24,12 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="gps.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="gpslogger.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="robotelemetry.py" />
   </ItemGroup>
   <ItemGroup>
@@ -38,6 +44,9 @@
       <PathEnvironmentVariable>PYTHONPATH</PathEnvironmentVariable>
       <Architecture>X86</Architecture>
     </Interpreter>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="gps_test_output.txt" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
