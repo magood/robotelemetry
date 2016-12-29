@@ -9,6 +9,7 @@ flask
 flask-socketio
 redis
 gpsd-py3?
+numpy
 
 deprecated?
 pynmea
