@@ -1,28 +1,36 @@
 import gpsd
 import time, os
 import numpy as np
-from math import radians, degrees, sin, cos, sqrt, asin, atan2
+from math import radians, degrees, sin, cos, sqrt, asin, atan2, pi
 from flask_socketio import SocketIO
+
+EARTH_SPHERE_RADIUS = 6372.8 * 1000 #in meters
+socketio = SocketIO(message_queue='redis://')
 
 def connect_local():
     gpsd.connect()
+
+def angle_trunc(a):
+    while a < 0.0:
+        a += pi * 2
+    return a
 
 def coord_distance(p1, p2):
     """Estimated distance between two lat/lon points using haversine.
     p1 and p2 should be [lat,lon]."""
     #references: http://www.movable-type.co.uk/scripts/latlong.html
-    R = 6372.8 * 1000 #in meters
     rlat1 = radians(p1[0])
     rlat2 = radians(p2[0])
     dLat = radians(p2[0] - p1[0])
     dLon = radians(p2[1] - p1[1])
     a = sin(dLat/2)**2 + cos(rlat1)*cos(rlat2)*sin(dLon/2)**2
     c = 2*asin(sqrt(a))
-    dist = R*c
+    dist = EARTH_SPHERE_RADIUS*c
     return dist
 
 def bearing_to_point(p1, p2):
-    """initial bearing (in radians) - over long distances, a straight line may change heading."""
+    """initial bearing (in radians) from p1 lat/lon to p2 lat/lon.
+    Over long distances, a straight line may change heading."""
     #references: http://www.movable-type.co.uk/scripts/latlong.html
     rlat1 = radians(p1[0])
     rlat2 = radians(p2[0])
@@ -42,7 +50,7 @@ def bearing_dist_to_plane(bearing, distance):
 def coords_to_xy(lat, lon):
     """Converts latitude/longitude coordinates to local x/y plane, using Haversine"""
     #references: http://gamedev.stackexchange.com/questions/18340/get-position-of-point-on-circumference-of-circle-given-an-angle
-    R = 6372.8 * 1000 #in meters
+    
     if ORIGIN_LOC:
         point = [lat,lon]
         dist = coord_distance(ORIGIN_LOC, point)
@@ -50,6 +58,25 @@ def coords_to_xy(lat, lon):
         brng = bearing_to_point(ORIGIN_LOC, point)
         #to x/y
         return bearing_dist_to_plane(brng, dist)
+
+def coords_from_loc_bearing(l1, dist, bearing):
+    """Gets lat/lon coords of a point dist meters at bearing angle (in radians) from lat/lon point l1."""
+    lat1,lon1 = l1
+    lat=asin(sin(lat1)*cos(dist)+cos(lat1)*sin(dist)*cos(bearing))
+    if cos(lat) == 0:
+        lon=lon1 #endpoint a pole
+    else:
+        lon=mod(lon1-asin(sin(bearing)*sin(dist)/cos(lat))+pi,2*pi)-pi
+    return lat,lon
+
+
+def xy_to_coords(x,y):
+    """Converts local x/y coords to latitude/longitude, using Haversine"""
+    if ORIGIN_LOC:
+        dist = sqrt(x**2 + y**2)
+        bearing = angle_trunc(atan2(y, x))
+        coords = coords_from_loc_bearing(ORIGIN_LOC, dist, bearing)
+        return coords
 
 def set_origin():
     """Wait for fix, set origin in local plane as first point with at least a 2D fix"""
@@ -88,6 +115,13 @@ def reported_err_to_variance(error, err_code):
         #varance is stddev/sigma squared
         var = ((error_val / 2) ** 2)
     return var
+
+def report_state(x, P):
+    """Pass along state to socketio web app"""
+    socketio.emit('x', {'x': x})
+    socketio.emit('P', {'P': P})
+    loc = xy_to_coords(x[0], x[1])
+    socketio.emit('location', {'lat': loc[0], 'lon': loc[1]})
 
 def kalman_step(x, F, u, P, Z, H, R, I):
     """One Kalman Filter prediction/measurement iteration, where all parameters are numpy matrices/arrays."""

@@ -73,6 +73,7 @@
     <Content Include="telemserver\templates\contact.html" />
     <Content Include="telemserver\templates\index.html" />
     <Content Include="telemserver\templates\layout.html" />
+    <Content Include="telemserver\templates\location.html" />
     <Content Include="telemserver\templates\test.html" />
   </ItemGroup>
   <ItemGroup>
