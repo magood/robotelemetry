@@ -10,6 +10,16 @@ socketio = SocketIO(message_queue='redis://')
 def connect_local():
     gpsd.connect()
 
+def get_loc(max_tries=None):
+    p = None
+    i = 0
+    while p is None and (max_tries is None or i < max_tries):
+        try:
+            p = gpsd.get_current()
+        except IndexError:
+            #gpsd sometimes chokes on the parsing and throws IndexError - don't know why.
+            pass
+
 def angle_trunc(a):
     while a < 0.0:
         a += pi * 2
@@ -84,7 +94,7 @@ def set_origin():
     ORIGIN_LOC = None
 
     while FIX_MODE < 2:
-        p = gpsd.get_current()
+        p = get_loc()
         FIX_MODE = p.mode
         if p.mode >= 2:
             ORIGIN_LOC = (p.lat, p.lon)
@@ -94,11 +104,11 @@ def hack_time():
     """dumb dirty hack to set the time from the gps"""
     starttime = None
     while starttime is None:
-        p = gpsd.get_current()
+        p = get_loc()
         starttime = p.time
     newtime = starttime
     while newtime == starttime:
-        p = gpsd.get_current()
+        p = get_loc()
         if p.mode >= 2:
             newtime = p.time
     #set the system time.
@@ -219,11 +229,11 @@ if __name__ == '__main__':
     #Main filter loop
     while True:
         start_loop_ts = time.time()
-        p = gpsd.get_current()
+        p = get_loc()
         #ensure the reading is fresh
         while p.time == last_gps_time:
             time.sleep(0.05)
-            p = gpsd.get_current()
+            p = get_loc()
         last_gps_time = p.time
 
         #measurement is like m = [x_pos, y_pos, altitude, dx, dy (computed from speed/track), speed, track] #and maybe drop speed and track here...
