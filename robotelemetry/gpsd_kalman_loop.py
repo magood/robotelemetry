@@ -4,6 +4,7 @@ import numpy as np
 from math import radians, degrees, sin, cos, sqrt, asin, atan2, pi
 from flask_socketio import SocketIO
 
+ORIGIN_LOC = None
 EARTH_SPHERE_RADIUS = 6372.8 * 1000 #in meters
 socketio = SocketIO(message_queue='redis://')
 
@@ -16,9 +17,10 @@ def get_loc(max_tries=None):
     while p is None and (max_tries is None or i < max_tries):
         try:
             p = gpsd.get_current()
-        except IndexError:
+        except (IndexError, KeyError):
             #gpsd sometimes chokes on the parsing and throws IndexError - don't know why.
             pass
+    return p
 
 def angle_trunc(a):
     while a < 0.0:
@@ -53,8 +55,8 @@ def bearing_to_point(p1, p2):
 
 def bearing_dist_to_plane(bearing, distance):
     """x,y coordinates for a point distance units from 0,0 at angle bearing"""
-    x = Cos(bearing) * distance
-    y = Sin(bearing) * distance
+    x = cos(bearing) * distance
+    y = sin(bearing) * distance
     return [x,y]
 
 def coords_to_xy(lat, lon):
@@ -91,6 +93,7 @@ def xy_to_coords(x,y):
 def set_origin():
     """Wait for fix, set origin in local plane as first point with at least a 2D fix"""
     FIX_MODE = 1
+    global ORIGIN_LOC
     ORIGIN_LOC = None
 
     while FIX_MODE < 2:
@@ -220,8 +223,10 @@ if __name__ == '__main__':
                 [0.,0.,0.,0.,1.,0.,0.],
                 [0.,0.,0.,0.,0.,1.,0.],
                 [0.,0.,0.,0.,0.,0.,1.],])
-    
+
+    print('setting origin')    
     set_origin()
+    print('hack_time()')
     hack_time()
 
     last_gps_time = None
@@ -235,6 +240,8 @@ if __name__ == '__main__':
             time.sleep(0.05)
             p = get_loc()
         last_gps_time = p.time
+        
+        print('location: ', p)
 
         #measurement is like m = [x_pos, y_pos, altitude, dx, dy (computed from speed/track), speed, track] #and maybe drop speed and track here...
         x_pos,y_pos = coords_to_xy(p.lat, p.lon)
