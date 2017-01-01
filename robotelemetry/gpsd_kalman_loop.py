@@ -139,15 +139,15 @@ def report_state(x, P):
 def kalman_step(x, F, u, P, Z, H, R, I):
     """One Kalman Filter prediction/measurement iteration, where all parameters are numpy matrices/arrays."""
     # prediction
-    x = (F * x) + u
-    P = F * P * F.T
+    x = F.dot(x) + u
+    P = F.dot(P).dot(F.T)
         
     # measurement update
-    y = Z.T - (H * x)
-    S = H * P * H.T + R
-    K = P * H.T * S.I
-    x = x + (K * y)
-    P = (I - (K * H)) * P
+    y = Z.T - H.dot(x)
+    S = H.dot(P).dot(H.T) + R
+    K = P.dot(H.T).dot(S.I)
+    x = x + K.dot(y)
+    P = (I - K.dot(H)).dot(P)
     return x, P
         
 
@@ -259,7 +259,7 @@ if __name__ == '__main__':
             Hp[5,5] = 0.
             Hp[6,6] = 0.
         #measurement array
-        m = np.array([[x_pos, y_pos, p.altitude, dx, dy, p.hspeed, p.track]])
+        z = np.array([[x_pos, y_pos, p.altitude, dx, dy, p.hspeed, p.track]])
 
         #Update R covariance of measurements based on reported data if available
         Rp = R.copy()
@@ -284,7 +284,7 @@ if __name__ == '__main__':
                 Rp[4,4] = s_var
                 Rp[5,5] = s_var
 
-        x,P = kalman_step(x, F, u, P, Z, Hp, R, I)
+        x,P = kalman_step(x, F, u, P, z, Hp, R, I)
         
         #Sleep for the rest of the second.
         end_loop_ts = time.time()
