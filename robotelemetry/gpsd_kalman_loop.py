@@ -115,8 +115,8 @@ def hack_time():
         if p.mode >= 2:
             newtime = p.time
     #set the system time.
-    #os.system('date -s %s' % newtime)
-    os.system('hwclock --set %s' % newtime)
+    os.system('date -s %s' % newtime)
+    #os.system('hwclock --set %s' % newtime)
 
 def reported_err_to_variance(error, err_code):
     """Given an error expressed in a 95% confidence interval (from gpsd), return variance value.
@@ -250,14 +250,14 @@ if __name__ == '__main__':
         #Decide which measurements are available based on fix mode.
         Hp = H.copy()
         if p.mode < 3:
-            Hp[2][2] = 0.
+            Hp[2,2] = 0.
         if p.mode < 2:
-            Hp[0][0] = 0.
-            Hp[1][1] = 0.
-            Hp[3][3] = 0.
-            Hp[4][4] = 0.
-            Hp[5][5] = 0.
-            Hp[6][6] = 0.
+            Hp[0,0] = 0.
+            Hp[1,1] = 0.
+            Hp[3,3] = 0.
+            Hp[4,4] = 0.
+            Hp[5,5] = 0.
+            Hp[6,6] = 0.
         #measurement array
         m = np.array([[x_pos, y_pos, p.altitude, dx, dy, p.hspeed, p.track]])
 
@@ -267,22 +267,22 @@ if __name__ == '__main__':
             #x/logitude error
             x_var = reported_err_to_variance(p.error, 'epx')
             if x_var is not None:
-                Rp[0][0] = x_var
+                Rp[0,0] = x_var
             #y/latitude error
             y_var = reported_err_to_variance(p.error, 'epy')
             if y_var is not None:
-                Rp[1][1] = y_var
+                Rp[1,1] = y_var
             #vertical error
             v_var = reported_err_to_variance(p.error, 'epv')
             if v_var is not None:
-                Rp[2][2] = v_var
+                Rp[2,2] = v_var
             #speed error, m/s
             s_var = reported_err_to_variance(p.error, 'eps')
             if s_var is not None:
                 #TODO technically, dx/dy are not EXACTLY this...
-                Rp[3][3] = s_var
-                Rp[4][4] = s_var
-                Rp[5][5] = s_var
+                Rp[3,3] = s_var
+                Rp[4,4] = s_var
+                Rp[5,5] = s_var
 
         x,P = kalman_step(x, F, u, P, Z, Hp, R, I)
         
