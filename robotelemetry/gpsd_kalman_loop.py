@@ -115,7 +115,7 @@ def hack_time():
         if p.mode >= 2:
             newtime = p.time
     #set the system time.
-    os.system('date -s %s' % newtime)
+    os.system('sudo date -s %s' % newtime)
     #os.system('hwclock --set %s' % newtime)
 
 def reported_err_to_variance(error, err_code):
@@ -123,7 +123,7 @@ def reported_err_to_variance(error, err_code):
     Must be resiliant to the error code not being reported, based on fix. Returns None in that case."""
     var = None
     error_val = error.get(err_code)
-    if val is not None:
+    if error_val is not None:
         #95% confidence interval, so within 2 standard deviations.
         #varance is stddev/sigma squared
         var = ((error_val / 2) ** 2)
