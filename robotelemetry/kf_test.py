@@ -4,7 +4,8 @@ import numpy as np
 
 class Test_kf_test(unittest.TestCase):
     def test_kf_zeros(self):
-        x = np.array([0., 0., 0., 0., 0., 0., 0.])
+        #x, u, and z should be column-vectors:
+        x = np.matrix([[0., 0., 0., 0., 0., 0., 0.]]).T
         #F - Next state update matrix, nxn
         F = np.matrix([[1.,0.,0.,1.,0.,0.,0.],
                        [0.,1.,0.,0.,1.,0.,0.],
@@ -40,7 +41,7 @@ class Test_kf_test(unittest.TestCase):
                        [0.,0.,0.,0.,GPS_V_VARIANCE,0.,0.],
                        [0.,0.,0.,0.,0.,GPS_V_VARIANCE,0.],
                        [0.,0.,0.,0.,0.,0.,GPS_TRACK_VARIANCE]])
-        u = np.array([0.,0.,0.,0.,0.,0.,0.])
+        u = np.matrix([[0.,0.,0.,0.,0.,0.,0.]]).T
         I = np.matrix([[1.,0.,0.,0.,0.,0.,0.],
                     [0.,1.,0.,0.,0.,0.,0.],
                     [0.,0.,1.,0.,0.,0.,0.],
@@ -48,12 +49,13 @@ class Test_kf_test(unittest.TestCase):
                     [0.,0.,0.,0.,1.,0.,0.],
                     [0.,0.,0.,0.,0.,1.,0.],
                     [0.,0.,0.,0.,0.,0.,1.],])
-        z = np.array([0, 0, 0, 0, 0, 0, 0])
+        z = np.matrix([[0, 0, 0, 0, 0, 0, 0]]).T
         x,P = kalman_step(x, F, u, P, z, H, R, I)
-        np.testing.assert_array_equal(x, np.array([0., 0., 0., 0., 0., 0., 0.]))
+        np.testing.assert_array_equal(x, np.matrix([[0., 0., 0., 0., 0., 0., 0.]]).T)
 
     def test_kf_simiple(self):
-        x = np.array([0., 0., 0., 0., 0., 0., 0.])
+        #x, u, and z should be column-vectors:
+        x = np.matrix([[0., 0., 0., 0., 0., 0., 0.]]).T
         #F - Next state update matrix, nxn
         F = np.matrix([[1.,0.,0.,1.,0.,0.,0.],
                        [0.,1.,0.,0.,1.,0.,0.],
@@ -89,7 +91,7 @@ class Test_kf_test(unittest.TestCase):
                        [0.,0.,0.,0.,GPS_V_VARIANCE,0.,0.],
                        [0.,0.,0.,0.,0.,GPS_V_VARIANCE,0.],
                        [0.,0.,0.,0.,0.,0.,GPS_TRACK_VARIANCE]])
-        u = np.array([0.,0.,0.,0.,0.,0.,0.])
+        u = np.matrix([[0.,0.,0.,0.,0.,0.,0.]]).T
         I = np.matrix([[1.,0.,0.,0.,0.,0.,0.],
                     [0.,1.,0.,0.,0.,0.,0.],
                     [0.,0.,1.,0.,0.,0.,0.],
@@ -98,14 +100,14 @@ class Test_kf_test(unittest.TestCase):
                     [0.,0.,0.,0.,0.,1.,0.],
                     [0.,0.,0.,0.,0.,0.,1.],])
         zs = []
-        zs.append(np.array([0, 0, 0, 0, 0, 0, 0]))
-        zs.append(np.array([1, 1, 0, 0, 0, 0, 0]))
-        zs.append(np.array([-1, 1, 0, 0, 0, 0, 0]))
-        zs.append(np.array([-1, -1, 0, 0, 0, 0, 0]))
-        zs.append(np.array([1, -1, 0, 0, 0, 0, 0]))
+        zs.append(np.matrix([[0, 0, 0, 0, 0, 0, 0]]).T)
+        zs.append(np.matrix([[1, 1, 0, 0, 0, 0, 0]]).T)
+        zs.append(np.matrix([[-1, 1, 0, 0, 0, 0, 0]]).T)
+        zs.append(np.matrix([[-1, -1, 0, 0, 0, 0, 0]]).T)
+        zs.append(np.matrix([[1, -1, 0, 0, 0, 0, 0]]).T)
         for z in zs:
             x,P = kalman_step(x, F, u, P, z, H, R, I)
-        np.testing.assert_allclose(x, np.array([0., 0., 0., 0., 0., 0., 0.]))
+        np.testing.assert_allclose(x, np.matrix([[0., 0., 0., 0., 0., 0., 0.]]).T, atol=.01)
 
 if __name__ == '__main__':
     unittest.main()

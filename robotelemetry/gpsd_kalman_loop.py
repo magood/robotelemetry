@@ -143,8 +143,11 @@ def kalman_step(x, F, u, P, Z, H, R, I):
     P = F.dot(P).dot(F.T)
         
     # measurement update
-    y = Z.T - H.dot(x.T)
+    #y: Innovation residual (difference between actual and predicted measurements)
+    y = Z - H.dot(x)
+    #S: Innovation covariance
     S = H.dot(P).dot(H.T) + R
+    #K: Kalman gain
     K = P.dot(H.T).dot(S.I)
     x = x + K.dot(y)
     P = (I - K.dot(H)).dot(P)
@@ -158,7 +161,8 @@ if __name__ == '__main__':
     #x = [x, y, altitude, dx, dy, horizontal speed (m/s), track]
     #local plane is tangent to earth at 0,0.  Positive y is North.
     #x has n elements.
-    x = np.array([0., 0., 0., 0., 0., 0., 0.])
+    #x, u, and z should be column-vectors:
+    x = np.matrix([[0., 0., 0., 0., 0., 0., 0.]]).T
     
     #F - Next state update matrix, nxn
     F = np.matrix([[1.,0.,0.,1.,0.,0.,0.],
@@ -214,7 +218,7 @@ if __name__ == '__main__':
                    [0.,0.,0.,0.,0.,0.,GPS_TRACK_VARIANCE],])
 
     #u is a placeholder for now...
-    u = np.array([0.,0.,0.,0.,0.,0.,0.])
+    u = np.matrix([[0.,0.,0.,0.,0.,0.,0.]]).T
     #I is an identity matrix
     I = np.matrix([[1.,0.,0.,0.,0.,0.,0.],
                 [0.,1.,0.,0.,0.,0.,0.],
@@ -258,8 +262,8 @@ if __name__ == '__main__':
             Hp[4,4] = 0.
             Hp[5,5] = 0.
             Hp[6,6] = 0.
-        #measurement array
-        z = np.array([x_pos, y_pos, p.altitude, dx, dy, p.hspeed, p.track])
+        #measurement column vector
+        z = np.matrix([[x_pos, y_pos, p.altitude, dx, dy, p.hspeed, p.track]]).T
 
         #Update R covariance of measurements based on reported data if available
         Rp = R.copy()
