@@ -78,7 +78,7 @@ def coords_from_loc_bearing(l1, dist, bearing):
     if cos(lat) == 0:
         lon=lon1 #endpoint a pole
     else:
-        lon=mod(lon1-asin(sin(bearing)*sin(dist)/cos(lat))+pi,2*pi)-pi
+        lon=((lon1-asin(sin(bearing)*sin(dist)/cos(lat))+pi) % (2*pi)) - pi
     return lat,lon
 
 
@@ -291,6 +291,7 @@ if __name__ == '__main__':
                 Rp[5,5] = s_var
 
         x,P = kalman_step(x, F, u, P, z, Hp, Rp, I)
+        report_state(x,P)
         
         #Sleep for the rest of the second.
         end_loop_ts = time.time()
