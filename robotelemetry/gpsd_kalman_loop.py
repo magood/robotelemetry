@@ -137,7 +137,8 @@ def report_state(x, P):
     socketio.emit('location', {'lat': loc[0], 'lon': loc[1]})
 
 def kalman_step(x, F, u, P, Z, H, R, I):
-    """One Kalman Filter prediction/measurement iteration, where all parameters are numpy matrices/arrays."""
+    """One Kalman Filter prediction/measurement iteration, where all parameters are numpy matrices.
+    x, u, and z should be column-vectors as matrices:"""
     # prediction
     x = F.dot(x) + u
     P = F.dot(P).dot(F.T)
@@ -262,8 +263,9 @@ if __name__ == '__main__':
             Hp[4,4] = 0.
             Hp[5,5] = 0.
             Hp[6,6] = 0.
+        alt = 0. if p.mode != 3 else p.altitude()
         #measurement column vector
-        z = np.matrix([[x_pos, y_pos, p.altitude, dx, dy, p.hspeed, p.track]]).T
+        z = np.matrix([[x_pos, y_pos, alt, dx, dy, p.hspeed, p.track]]).T
 
         #Update R covariance of measurements based on reported data if available
         Rp = R.copy()

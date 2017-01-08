@@ -1,0 +1,7 @@
+[program:telemserver]
+command=/home/pi/start_server.sh
+directory=/home/pi/robotelemetry/robotelemetry
+user=pi
+autostart=true
+autorestart=true
+stderr_logfile=/home/pi/telemserver.err.log

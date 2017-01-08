@@ -47,6 +47,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="requirements.txt" />
+    <Content Include="telemserver supervisor conf.txt" />
     <Content Include="telemserver\static\content\bootstrap.css" />
     <Content Include="telemserver\static\content\bootstrap.min.css" />
     <Content Include="telemserver\static\content\site.css" />

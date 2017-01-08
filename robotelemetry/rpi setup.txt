@@ -3,6 +3,7 @@ requirements on the raspberry pi:
 -gpsd
 -redis
 -serial config to enable the hardware uart and not run a console on the dumb thing
+-supervisor
 
 pip installs (eventually these should be in requirements.txt):
 flask
