@@ -1,12 +1,14 @@
 ﻿{% extends "layout.html" %}
 
 {% block scripts %}
-<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.6/socket.io.min.js"></script>
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.7.2/socket.io.min.js"></script>
 <script type="text/javascript" charset="utf-8">
+    console.log('starting...');
     var socket = io.connect('http://' + document.domain + ':' + location.port);
+    console.log('io.connect() finished');
     socket.on('connect', function () {
         console.log('connected on client');
-        //socket.emit('my event', {data: 'I\'m connected!'});
+        socket.emit('my event', {data: 'I\'m connected!'});
     });
     socket.on('telem', function(data) {
         console.log("telem:", data);
