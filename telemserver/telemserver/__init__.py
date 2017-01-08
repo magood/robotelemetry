@@ -8,6 +8,9 @@ from flask import Flask
 from flask_socketio import SocketIO
 from . import config
 
+import eventlet
+eventlet.monkey_patch()
+
 app = Flask(__name__)
 app.config.from_object(config.config)
 socketio = SocketIO(app, message_queue='redis://')
