@@ -63,3 +63,4 @@ target/
 *.suo
 /telemserver/bin
 /telemserver/obj/Debug
+/.vs/config
