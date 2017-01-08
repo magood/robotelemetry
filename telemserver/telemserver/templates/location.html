@@ -17,6 +17,9 @@
         let $d = $("<div></div>").text("loc: ", data);
         $("#updateTarget").append($d);
     })
+    socket.on('telem', function (data) {
+        console.log("telem:", data);
+    });
 </script>
 {% endblock %}
 
