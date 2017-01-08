@@ -5,7 +5,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>7be8e1aa-3369-4c3c-9081-ba5d2f0fe1e8</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>robotelemetry.py</StartupFile>
+    <StartupFile>kf_test.py</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
@@ -31,6 +31,9 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="gpslogger.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="kf_test.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="robotelemetry.py" />

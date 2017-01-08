@@ -8,7 +8,7 @@ pip installs (eventually these should be in requirements.txt):
 flask
 flask-socketio
 redis
-gpsd-py3?
+gpsd-py3
 numpy
 
 deprecated?
