@@ -131,8 +131,8 @@ def reported_err_to_variance(error, err_code):
 
 def report_state(x, P):
     """Pass along state to socketio web app"""
-    socketio.emit('x', {'x': x})
-    socketio.emit('P', {'P': P})
+    #socketio.emit('x', {'x': x})
+    #socketio.emit('P', {'P': P})
     loc = xy_to_coords(x[0], x[1])
     socketio.emit('location', {'lat': loc[0], 'lon': loc[1]})
 
