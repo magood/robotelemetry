@@ -76,6 +76,7 @@
     <Content Include="telemserver\templates\layout.html" />
     <Content Include="telemserver\templates\location.html" />
     <Content Include="telemserver\templates\test.html" />
+    <Content Include="windows env.txt" />
   </ItemGroup>
   <ItemGroup>
     <Interpreter Include="env\">

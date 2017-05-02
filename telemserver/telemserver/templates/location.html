@@ -1,5 +1,19 @@
 ﻿{% extends "layout.html" %}
-
+{% block header %}
+<style>
+    /* Always set the map height explicitly to define the size of the div
+       * element that contains the map. */
+    #map {
+        height: 100%;
+    }
+    /* Optional: Makes the sample page fill the window. */
+    html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+    }
+</style>
+{% endblock %}
 {% block scripts %}
 <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.7.2/socket.io.min.js"></script>
 <script type="text/javascript" charset="utf-8">
@@ -16,11 +30,46 @@
         console.log("loc: ", data);;
         let $d = $("<div></div>").text("loc: ", data);
         $("#updateTarget").append($d);
+        if (car == null) {
+            car = new google.maps.Marker({
+                position: data,
+                map: map
+            });
+        }
+        car.position = data;
     })
     socket.on('telem', function (data) {
         console.log("telem:", data);
     });
+
+    var map;
+    var car = null;
+    function initMap() {
+        map = new google.maps.Map(document.getElementById('map'), {
+            center: { lat: -34.397, lng: 150.644 },
+            zoom: 8
+        });
+
+        //map.data.setStyle(function (feature) {
+        //    var variance = feature.getProperty('error');
+        //    return {
+        //        icon: getCircle(variance)
+        //    };
+        //});
+    }
+
+    function getCircle(magnitude) {
+        return {
+            path: google.maps.SymbolPath.CIRCLE,
+            fillColor: 'red',
+            fillOpacity: .2,
+            scale: Math.pow(2, magnitude) / 2,
+            strokeColor: 'white',
+            strokeWeight: .5
+        };
+    }
 </script>
+<script src="//maps.googleapis.com/maps/api/js?key=AIzaSyCuKCvKVmW-X1cNUfmzFsIiOu91YTiLeRQ&callback=initMap" async defer></script>
 {% endblock %}
 
 {% block content %}
@@ -29,5 +78,7 @@
 <h3>Appends state and loc</h3>
 
 <p id="updateTarget">[Please wait...]</p>
+
+<div id="map"></div>
 
 {% endblock %}

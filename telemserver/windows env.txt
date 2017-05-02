@@ -1,0 +1,9 @@
+To get eventlet to install, gevent was failing...  vcvars.bat stuff.
+So you have to download the wheel file from PyPI, update pip:
+
+python -m pip install --upgrade pip
+pip install wheel
+
+then install from the downloaded wheel file:
+
+pip install wheelfile.whl

@@ -33,6 +33,9 @@
     <Compile Include="gpslogger.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="imu_kalman_poc.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="kf_test.py">
       <SubType>Code</SubType>
     </Compile>
