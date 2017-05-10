@@ -133,7 +133,10 @@ def report_state(x, P):
     """Pass along state to socketio web app"""
     #socketio.emit('x', {'x': x})
     #socketio.emit('P', {'P': P})
+    print("ORIGIN_LOC:" + str(ORIGIN_LOC))
+    print("x:%f, y:%f" % (x[0],x[1]))
     loc = xy_to_coords(x[0], x[1])
+    print("lat:%f, lon:%f" % (loc[0],loc[1]))
     socketio.emit('location', {'lat': loc[0], 'lon': loc[1]})
 
 def kalman_step(x, F, u, P, Z, H, R, I):
