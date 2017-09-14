@@ -28,7 +28,7 @@
     });
     socket.on('location', function (data) {
         console.log("loc: ", data);;
-        let $d = $("<div></div>").text("loc: ", data);
+        let $d = $("<div></div>").text(`lat: ${data.lat}, lon: ${data.lon}`);
         $("#updateTarget").append($d);
         if (car == null) {
             car = new google.maps.Marker({

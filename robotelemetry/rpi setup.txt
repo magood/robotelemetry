@@ -12,6 +12,7 @@ redis
 gpsd-py3
 numpy
 eventlet
+gevent
 
 deprecated?
 pynmea
