@@ -44,7 +44,7 @@
     <Compile Include="kf_test.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="robotelemetry.py" />
+    <Compile Include="mock_scripts\robotelemetry.py" />
     <Compile Include="xy_latlon_conversion_test.py">
       <SubType>Code</SubType>
     </Compile>
@@ -64,6 +64,9 @@
   <ItemGroup>
     <Content Include="gps_test_output.txt" />
     <Content Include="rpi setup.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="mock_scripts\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
